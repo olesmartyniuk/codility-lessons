@@ -20,12 +20,35 @@ namespace NumberOfDiscIntersections
 
             for (var i = 0; i < A.Length; i++)
             {
-                for (var j = i + 1; j < A.Length; j++)
+                if (i + A[i] >= A.Length - 1)
                 {
-                    if (Intersect(A, i, j))
-                    {                        
-                        result++;
+                    result += A.Length - 1 - i;
+                    if (result > 10_000_000)
+                    {
+                        return -1;
                     }
+                    continue;
+                }
+                else
+                {
+                    result += A[i];
+                    if (result > 10_000_000)
+                    {
+                        return -1;
+                    }
+
+                    for (var j = i + A[i] + 1; j < A.Length; j++)
+                    {
+                        if (Intersect(A, i, j))
+                        {
+                            result++;
+                            if (result > 10_000_000)
+                            {
+                                return -1;
+                            }
+                        }
+                    }
+
                 }
             }
 
@@ -39,7 +62,7 @@ namespace NumberOfDiscIntersections
             var jLeft = j - A[j];
             var jRight = j + A[j];
 
-            var notIntersected =  (iRight < jLeft && i < j) || (jRight < iLeft && i > j);
+            var notIntersected = (iRight < jLeft && i < j) || (jRight < iLeft && i > j);
 
             return !notIntersected;
         }
@@ -56,6 +79,9 @@ namespace NumberOfDiscIntersections
 
         [Theory]
         [InlineData(new int[] { 1, 5, 2, 1, 4, 0 }, 11)]
+        [InlineData(new int[] { 1, 0, 0, 1 }, 2)]
+        [InlineData(new int[] { 1, 0, 0, 0 }, 1)]
+        [InlineData(new int[] { 0, 0, 0, 0 }, 0)]
         public void Test1(int[] A, int expected)
         {
             var res = new Solution(output).solution(A);
