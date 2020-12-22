@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -14,7 +15,7 @@ namespace NumberOfDiscIntersections
             this.output = output;
         }
 
-        public int solution(int[] A)
+        public int solutionQuadraticComplexity(int[] A)
         {
             var result = 0;
 
@@ -55,6 +56,46 @@ namespace NumberOfDiscIntersections
             return result;
         }
 
+        public int solutionLogarithmicComplexity(int[] A)
+        {
+            var begin = A
+                .Select((v, i) => (long)i - (long)v)
+                .OrderBy(v => v)
+                .ToArray();
+
+            var end = A
+                .Select((v, i) => (long)i + (long)v)
+                .OrderBy(v => v)
+                .ToArray();
+
+            var intersections = 0;
+            var openDiscs = 0;
+            var i = 0;
+            var j = 0;
+
+            while (i < begin.Length)
+            {
+                if (begin[i] <= end[j])
+                {
+                    intersections += openDiscs;
+                    openDiscs++;
+                    i++;
+                }
+                else
+                {
+                    openDiscs--;
+                    j++;
+                }
+
+                if (intersections > 10_000_000)
+                {
+                    return -1;
+                }
+            }
+
+            return intersections;
+        }
+
         private bool Intersect(int[] A, int i, int j)
         {
             var iLeft = i - A[i];
@@ -82,9 +123,10 @@ namespace NumberOfDiscIntersections
         [InlineData(new int[] { 1, 0, 0, 1 }, 2)]
         [InlineData(new int[] { 1, 0, 0, 0 }, 1)]
         [InlineData(new int[] { 0, 0, 0, 0 }, 0)]
+        [InlineData(new int[] {1, 2147483647, 0}, 2)]
         public void Test1(int[] A, int expected)
         {
-            var res = new Solution(output).solution(A);
+            var res = new Solution(output).solutionLogarithmicComplexity(A);
             Assert.True(res == expected);
         }
     }
