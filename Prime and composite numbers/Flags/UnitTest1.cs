@@ -13,11 +13,11 @@ namespace Flags
                 return 0;
 
             var distances = CalculateDistances(A);
-            if (distances.Length == 0)
+            if (distances.Count == 0)
                 return 1;
 
             var result = 0;
-            for (int i = 1; i < distances.Length + 1; i++)
+            for (int i = 1; i < distances.Count + 1; i++)
             {
                 var flagsNumber = MaxFlags(distances, i);
                 if (flagsNumber > result)
@@ -40,16 +40,16 @@ namespace Flags
             return true;
         }
 
-        private int MaxFlags(int[] distances, int flags)
+        private int MaxFlags(List<int> distances, int flags)
         {
             var result = 0;
             long currentDistance = 0;
-            for (int i = 0; i < distances.Length; i++)
+            foreach(var distance in distances)
             {
                 if (result == flags)
                     return result;
 
-                currentDistance += distances[i];
+                currentDistance += distance;
                 if (flags <= currentDistance)
                 {
                     result++;
@@ -60,7 +60,7 @@ namespace Flags
             return result + 1;
         }
 
-        private int[] CalculateDistances(int[] A)
+        private List<int> CalculateDistances(int[] A)
         {
             var result = new List<int>();
             var distance = 0;
@@ -82,7 +82,7 @@ namespace Flags
                 }
             }
 
-            return result.ToArray();
+            return result;
         }
     }
 
